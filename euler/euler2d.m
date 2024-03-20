@@ -37,12 +37,41 @@ classdef euler2d
         end
 
         function nobj = project(obj,dt)
-            for itr = 1:500
+            for itr = 1:5000
                 for i=2:obj.size_y-1
                     for j=2:obj.size_x-1
-                        obj.pressure(i,j) = -obj.rho/dt*obj.dx*(obj.u(i,j)-obj.u(i,j-1)+obj.v(i,j)-obj.v(i-1,j))...
-                            + obj.pressure(i+1,j) + obj.pressure(i-1,j) + obj.pressure(i,j+1) + obj.pressure(i,j-1);
-                        obj.pressure(i,j) = obj.pressure(i,j) *0.25;
+                        right_term = -(obj.u(i,j)-obj.u(i,j-1) + obj.v(i,j)-obj.v(i-1,j))/obj.dx;
+                        left_term = obj.pressure(i+1,j) + obj.pressure(i-1,j)+ obj.pressure(i,j+1)+ obj.pressure(i,j-1);
+                        div_num = 4;
+                        if (obj.obstacle(i,j+1)==1)
+                            div_num = div_num -1;
+                            right_term = right_term + obj.u(i,j)/obj.dx;
+                            left_term = left_term - obj.pressure(i,j+1);
+                        end
+                        if (obj.obstacle(i,j-1)==1)
+                            div_num = div_num -1;
+                            right_term = right_term + obj.u(i,j-1)/obj.dx;
+                            left_term = left_term - obj.pressure(i,j-1);
+                        end
+                        if (obj.obstacle(i+1,j)==1)
+                            div_num = div_num -1;
+                            right_term = right_term + obj.v(i,j)/obj.dx;
+                            left_term = left_term - obj.pressure(i+1,j);
+                        end
+                        if(obj.obstacle(i-1,j)==1)
+                            div_num = div_num -1;
+                            right_term = right_term + obj.v(i-1,j)/obj.dx;
+                            left_term = left_term - obj.pressure(i-1,j);
+                        end
+                        if div_num == 0
+                            continue;
+                        end
+                        
+                        obj.pressure(i,j) = (right_term*obj.rho/dt*obj.dx*obj.dx+left_term)/div_num;
+                        
+                        % obj.pressure(i,j) = -obj.rho/dt*obj.dx*(obj.u(i,j)-obj.u(i,j-1)+obj.v(i,j)-obj.v(i-1,j))...
+                        %     + obj.pressure(i+1,j) + obj.pressure(i-1,j) + obj.pressure(i,j+1) + obj.pressure(i,j-1);
+                        % obj.pressure(i,j) = obj.pressure(i,j) *0.25;
                     end
                 end
             end
