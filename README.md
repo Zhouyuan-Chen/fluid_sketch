@@ -1,5 +1,7 @@
 # TinyCompanion
 
+This repo is a sketch...
+
 ## Euler Fluid Simulation:
 
 ### without solid constraint
