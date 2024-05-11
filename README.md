@@ -1,6 +1,6 @@
-# TinyCompanion
+# fluid_sketch
 
-This repo is a sketch...
+This repo is a prototype for my fluid simulator, which is under construction called Tiny Alligator(considering my recent work, I don't know when I will publish it)...
 
 ## Euler Fluid Simulation:
 
